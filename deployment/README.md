@@ -15,7 +15,13 @@ The following command line utilities.
     ```sh
     ./deploy.sh deploy.properties
     ```
-- Create a new transaction type `OPENCRVS_NEW` in `mosip_regprc/transaction_type` database table.
+- Create a new transaction type, 'OPENCRVS_NEW,' in the 'mosip_regprc/transaction_type' database table:
+```
+  INSERT INTO regprc.transaction_type(
+  code, descr, lang_code, is_active, cr_by, cr_dtimes, upd_by, upd_dtimes, is_deleted, del_dtimes)
+  VALUES
+  ('OPENCRVS_NEW', 'OPENCRVS_NEW', 'eng', true, 'MOSIP_SYSTEM', CURRENT_TIMESTAMP, 'some_upd_by_value', CURRENT_TIMESTAMP, false, DEFAULT);
+```
 - Sync the OpenCRVS masterdata with MOSIP. (WIP. For now add some _states_ and _districts_ from OpenCRVS to MOSIP masterdata manually).
 - Onboard a new credential type partner (using [partner onboarding scripts](https://github.com/mosip/mosip-onboarding/tree/master), or via MOSIP PMP UI), with;
   - name like `opencrvs-partner`
@@ -37,13 +43,18 @@ The following command line utilities.
   - `SUBSCRIBE_CREDENTIAL_ISSUED_INDIVIDUAL`
   - `PUBLISH_CREDENTIAL_STATUS_UPDATE_GENERAL`
 - Apart from creating the partner keycloak client, create a new user with the same username as the partner name (that was previously given), with any password.
+
+- Run the `keycloak-init.sh` script to create a client and user, as described above
+   ```
+   ./keycloak-init.sh <cluster-kubeconfig-file>
+   ```
 - Get certificate from OpenCRVS.
 - Run the following to install the mediator and components (The script will prompt for inputs):
-    ```sh
+    ```
     ./install.sh <cluster-kubeconfig-file>
     ```
   - OR Pass the following environment variables to the above script, if it is not desired to prompt for inputs:
-    ```sh
+    ```
     export OPENCRVS_AUTH_URL=
     export OPENCRVS_LOCATIONS_URL=
     export OPENCRVS_RECEIVE_CREDENTIAL_URL=

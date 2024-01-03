@@ -1,0 +1,9 @@
+mediator:
+  opencrvs:
+    authUrl: https://auth.farajaland.opencrvs.org/authenticateSystemClient
+    receiveCredentialUrl: http://opencrvs-side-mediator.opencrvs-side-mediator/birthReceiveNid
+    locationsUrl: https://gateway.farajaland.opencrvs.org/location
+    clientId: "opencrvs"
+    clientSecret: "1234"
+    clientShaSecret: "12345"
+
