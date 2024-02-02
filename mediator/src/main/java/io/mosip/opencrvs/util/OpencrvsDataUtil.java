@@ -284,8 +284,10 @@ public class OpencrvsDataUtil {
 
     public String fetchAddressValueFromId(String id){
         try{
+            String url = locationsUrl + "/" + id;
+            LOGGER.info("Calling location url endpoint - " + url);
             JSONObject json = new JSONObject(
-                new RestTemplate().getForObject(locationsUrl + "/" + id, String.class));
+                new RestTemplate().getForObject(url, String.class));
             return json.getString("name");
         } catch(Exception e){
             throw ErrorCode.ADDRESS_FETCHING_EXCEPTION.throwUnchecked(e);
