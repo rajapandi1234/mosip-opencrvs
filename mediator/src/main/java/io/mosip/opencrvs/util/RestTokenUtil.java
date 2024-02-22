@@ -92,7 +92,8 @@ public class RestTokenUtil {
     private String getOpencrvsAuthTokenInterface(String tokenEndpoint, String clientId, String clientSecret) throws BaseCheckedException{
         String body = "{" +
             "\"client_id\":\"" + clientId + "\"" + "," +
-            "\"client_secret\":\"" + clientSecret + "\"" +
+            "\"client_secret\":\"" + clientSecret + "\"" + "," +
+            "\"grant_type\":\"client_credentials\"" +
         "}";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -102,7 +103,7 @@ public class RestTokenUtil {
             if (responseJson == null || responseJson.isEmpty()) {
                 throw ErrorCode.TOKEN_GENERATION_FAILED.throwChecked();
             }
-            return new JSONObject(responseJson).getString("token");
+            return new JSONObject(responseJson).getString("access_token");
         } catch (JSONException | RestClientException e) {
             throw ErrorCode.TOKEN_GENERATION_FAILED.throwChecked(e);
         }
