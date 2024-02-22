@@ -8,10 +8,12 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.registration.processor.opencrvs.stage.OpencrvsStage;
 import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +33,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.registration.processor.core.abstractverticle.EventDTO;
+import io.mosip.registration.processor.core.abstractverticle.HealthCheckDTO;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
@@ -53,6 +57,7 @@ import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.eventbus.EventHandler;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.PropertiesUtil;
+import io.mosip.registration.processor.opencrvs.stage.OpencrvsStage;
 import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
@@ -133,6 +138,18 @@ public class OpencrvsStageTest {
 				@Override
 				public void send(MessageBusAddress toAddress, MessageDTO message) {
 
+				}
+
+				@Override
+				public void consumerHealthCheck(Handler<HealthCheckDTO> eventHandler, String address) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void senderHealthCheck(Handler<HealthCheckDTO> eventHandler, String address) {
+					// TODO Auto-generated method stub
+					
 				}
 			};
 		}
@@ -216,7 +233,7 @@ public class OpencrvsStageTest {
 		Map<String, String> map1 = new HashMap<>();
 		map1.put("UIN", "4238135072");
 		JSONObject jsonObject = new JSONObject(map1);
-		Mockito.when(utitilites.retrieveUIN(any())).thenReturn(jsonObject);
+		Mockito.when(utitilites.retrieveIdrepoJson(any())).thenReturn(jsonObject);
 
 
 
@@ -352,7 +369,7 @@ public class OpencrvsStageTest {
 		Map<String, String> map1 = new HashMap<>();
 
 		JSONObject jsonObject = new JSONObject(map1);
-		Mockito.when(utitilites.retrieveUIN(any())).thenReturn(jsonObject);
+		Mockito.when(utitilites.retrieveIdrepoJson(any())).thenReturn(jsonObject);
 		MessageDTO result = stage.process(dto);
 		
 		assertFalse(result.getIsValid());
