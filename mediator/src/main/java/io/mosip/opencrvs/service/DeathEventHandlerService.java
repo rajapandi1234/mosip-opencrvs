@@ -1,9 +1,25 @@
 package io.mosip.opencrvs.service;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.HMACUtils2;
 import io.mosip.opencrvs.constant.ApiName;
 import io.mosip.opencrvs.constant.Constants;
 import io.mosip.opencrvs.constant.LoggingConstants;
@@ -11,30 +27,8 @@ import io.mosip.opencrvs.dto.BaseEventRequest;
 import io.mosip.opencrvs.dto.DecryptedEventDto;
 import io.mosip.opencrvs.error.ErrorCode;
 import io.mosip.opencrvs.util.LogUtil;
-import io.mosip.opencrvs.util.OpencrvsCryptoUtil;
 import io.mosip.opencrvs.util.OpencrvsDataUtil;
 import io.mosip.opencrvs.util.RestTokenUtil;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.core.env.Environment;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class DeathEventHandlerService {
@@ -124,7 +118,7 @@ public class DeathEventHandlerService {
                 throw ErrorCode.MISSING_UIN_IN_DEATH_EVENT.throwChecked();
             }
             for(DecryptedEventDto.Event.Context.Entry.Resource.Identifier identifier: patient.identifier){
-                if("NATIONAL_ID".equals(identifier.type)){
+                if("NATIONAL_ID".equals(OpencrvsDataUtil.getTypeCode(identifier))){
                     return identifier.value;
                 }
             }

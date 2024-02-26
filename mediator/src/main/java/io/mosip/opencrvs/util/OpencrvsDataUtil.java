@@ -1,26 +1,23 @@
 package io.mosip.opencrvs.util;
 
-import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.opencrvs.constant.LoggingConstants;
-import io.mosip.opencrvs.dto.DecryptedEventDto;
-import io.mosip.opencrvs.dto.ReceiveDto;
-import io.mosip.opencrvs.error.ErrorCode;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.StringUtils;
+import io.mosip.opencrvs.constant.LoggingConstants;
+import io.mosip.opencrvs.dto.DecryptedEventDto;
+import io.mosip.opencrvs.dto.DecryptedEventDto.Event.Context.Entry.Resource.Identifier;
+import io.mosip.opencrvs.dto.ReceiveDto;
+import io.mosip.opencrvs.error.ErrorCode;
 
 @Component
 public class OpencrvsDataUtil {
@@ -127,12 +124,22 @@ public class OpencrvsDataUtil {
 
     public String getOpencrvsBRNFromPatientBody(DecryptedEventDto.Event.Context.Entry.Resource patient){
         for(DecryptedEventDto.Event.Context.Entry.Resource.Identifier identifier : patient.identifier){
-            if("BIRTH_REGISTRATION_NUMBER".equals(identifier.type)){
+            if("BIRTH_REGISTRATION_NUMBER".equals(getTypeCode(identifier))){
                 return identifier.value;
             }
         }
         return null;
     }
+
+	public static String getTypeCode(DecryptedEventDto.Event.Context.Entry.Resource.Identifier identifier) {
+		return Optional.ofNullable(identifier)
+				.map(id -> id.type)
+				.map(typ -> typ.coding)
+				.filter(codings -> !codings.isEmpty())
+				.map(codings -> codings.get(0))
+				.map(coding -> coding.code)
+				.orElse("");
+	}
 
     public String getFullNameFromPatientBody(DecryptedEventDto.Event.Context.Entry.Resource patient){
         try{
@@ -220,7 +227,7 @@ public class OpencrvsDataUtil {
             for(DecryptedEventDto.Event.Context.Entry entry: contextEntries) {
                 if ("Patient".equals(entry.resource.resourceType)) {
                     for(DecryptedEventDto.Event.Context.Entry.Resource.Identifier identifier : entry.resource.identifier){
-                        if("MOSIP_AID".equals(identifier.type)){
+                        if("MOSIP_AID".equals(getTypeCode(identifier))){
                             return identifier.value;
                         }
                     }
