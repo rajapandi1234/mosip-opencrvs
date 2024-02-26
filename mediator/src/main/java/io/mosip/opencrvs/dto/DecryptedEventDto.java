@@ -7,12 +7,19 @@ public class DecryptedEventDto {
     public static class Event {
         public static class Context {
             public static class Entry {
+            	public static class Coding {
+            		public String system;
+            		public String code;
+            	}
                 public static class Resource {
                     public static class Focus {
                         public String reference;
                     }
                     public static class Identifier{
-                        public String type;
+                    	public static class Type{
+                            public List<Coding> coding;
+                    	}
+                        public Type type;
                         public String system;
                         public String value;
                     }
