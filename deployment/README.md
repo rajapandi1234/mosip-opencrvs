@@ -5,7 +5,7 @@ This document describes deployment of `mosip-side-mediator` and `registration-pr
 
 ## Prerequisites
 The following command line utilities.
-  - `psql`, `kubectl`,`helm`,`bash`, `curl`, `jq`
+- `psql`, `kubectl`,`helm`,`bash`, `curl`, `jq`
 
 ## Installation
 - Set up `mosip_opencrvs` db:
@@ -43,29 +43,12 @@ The following command line utilities.
   - `SUBSCRIBE_CREDENTIAL_ISSUED_INDIVIDUAL`
   - `PUBLISH_CREDENTIAL_STATUS_UPDATE_GENERAL`
 - Apart from creating the partner keycloak client, create a new user with the same username as the partner name (that was previously given), with any password.
-
-- Run the `keycloak-init.sh` script to create a client and user, as described above
-   ```
-   ./keycloak-init.sh <cluster-kubeconfig-file>
-   ```
 - Get certificate from OpenCRVS.
+- Get the opencrvs_client_id opencrvs_client_secret_key opencrvs_client_sha_secret from OPENCRVS
+- Get the mosip_opencrvs_partner_client_id mosip_opencrvs_partner_client_secret mosip_opencrvs_partner_client_sha_secret mosip_opencrvs_uin_token_partner from MOSIP
+- During the execution of the `install.sh` script, it will prompt for the private key and public key. Please ensure to provide the certificates supplied by the MOSIP team when prompted.
 - Run the following to install the mediator and components (The script will prompt for inputs):
     ```
-    ./install.sh <cluster-kubeconfig-file>
-    ```
-  - OR Pass the following environment variables to the above script, if it is not desired to prompt for inputs:
-    ```
-    export OPENCRVS_AUTH_URL=
-    export OPENCRVS_LOCATIONS_URL=
-    export OPENCRVS_RECEIVE_CREDENTIAL_URL=
-    export OPENCRVS_CLIENT_ID=
-    export OPENCRVS_CLIENT_SECRET=
-    export OPENCRVS_CLIENT_SHA_SECRET=
-    export MOSIP_OPENCRVS_PARTNER_CLIENT_ID=
-    export MOSIP_OPENCRVS_PARTNER_CLIENT_SECRET=
-    export MOSIP_OPENCRVS_PARTNER_CLIENT_SHA_SECRET=
-    export MOSIP_PRIVATE_KEY_PATH=
-    export OPENCRVS_PUBLIC_KEY_PATH=
     ./install.sh <cluster-kubeconfig-file>
     ```
 - Share the details with OpenCRVS: auth_url(mosip keycloak url), partner_client_id, partner_client_secret, partner_username, partner_password.
