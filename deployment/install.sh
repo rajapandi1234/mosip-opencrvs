@@ -32,14 +32,7 @@ echo Copy Configmaps.
 echo Copy Secrets.
 ./copy_secrets.sh
 
-kubectl create secret generic mosip-client-creds \
-  --namespace=$NS \
-  --from-literal=mosip_opencrvs_partner_client_id="$mosip_opencrvs_partner_client_id" \
-  --from-literal=mosip_opencrvs_partner_client_secret="$mosip_opencrvs_partner_client_secret" \
-  --from-literal=mosip_opencrvs_partner_client_sha_secret="$mosip_opencrvs_partner_client_sha_secret" \
-  --from-literal=mosip_opencrvs_uin_token_partner="$mosip_opencrvs_uin_token_partner"
-
-read -p "Please provide client private key file : " MOSIP_PRIV_KEY
+read -p "Please provide mosip private key file : " MOSIP_PRIV_KEY
   if [ -z "$MOSIP_PRIV_KEY" ]; then
     echo "MOSIP Private key file not provided; EXITING;";
     exit 0;
@@ -66,14 +59,35 @@ kubectl -n $NS create secret generic opencrvs-certs \
   --from-file="/tmp/mosip-priv.key" \
   --from-file="/tmp/opencrvs-pub.key"
 
+read -p "Enter opencrvs_client_id: " opencrvs_client_id
+read -p "Enter opencrvs_client_secret_key: " opencrvs_client_secret_key
+read -p "Enter opencrvs_client_sha_secret: " opencrvs_client_sha_secret
+
+read -p "Enter Kubernetes namespace: " namespace
 kubectl create secret generic opencrvs-client-creds \
-  --namespace=$NS \
+  --namespace=$namespace \
   --from-literal=opencrvs_client_id="$opencrvs_client_id" \
   --from-literal=opencrvs_client_secret_key="$opencrvs_client_secret_key" \
   --from-literal=opencrvs_client_sha_secret="$opencrvs_client_sha_secret"
 
+read -p "Enter mosip_opencrvs_partner_client_id: " mosip_opencrvs_partner_client_id
+read -p "Enter mosip_opencrvs_partner_client_secret: " mosip_opencrvs_partner_client_secret
+read -p "Enter mosip_opencrvs_partner_client_sha_secret: " mosip_opencrvs_partner_client_sha_secret
+read -p "Enter mosip_opencrvs_uin_token_partner: " mosip_opencrvs_uin_to
+
+read -p "Enter Kubernetes namespace: " namespace
+
+kubectl create secret generic mosip-client-creds \
+  --namespace=$namespace \
+  --from-literal=mosip_opencrvs_partner_client_id="$mosip_opencrvs_partner_client_id" \
+  --from-literal=mosip_opencrvs_partner_client_secret="$mosip_opencrvs_partner_client_secret" \
+  --from-literal=mosip_opencrvs_partner_client_sha_secret="$mosip_opencrvs_partner_client_sha_secret" \
+  --from-literal=mosip_opencrvs_uin_token_partner="$mosip_opencrvs_uin_token_partner"
+
+echo "Secrets created successfully!"
+
 echo Installing mosip-side opencrvs-mediator...
-helm -n $NS install opencrvs-mediator mosip/opencrvs-mediator \
+helm -n $NS install opencrvs-mediator /home/techno-376/IdeaProjects/mosip-helm/charts/opencrvs-mediator \
   --version $CHART_VERSION \
   -f values.yaml \
   --wait
