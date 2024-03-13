@@ -78,7 +78,7 @@ kubectl create secret generic mosip-client-creds \
 echo "Secrets created successfully!"
 
 echo Installing mosip-side opencrvs-mediator...
-helm -n $NS install opencrvs-mediator /home/techno-376/IdeaProjects/mosip-helm/charts/opencrvs-mediator \
+helm -n $NS install opencrvs-mediator mosip/opencrvs-mediator \
   --version $CHART_VERSION \
   -f values.yaml \
   --wait
