@@ -17,15 +17,6 @@ kubectl label ns $NS istio-injection=enabled --overwrite
 helm repo add mosip https://mosip.github.io/mosip-helm
 helm repo update
 
-mosip_opencrvs_partner_client_id="opencrvs-partner"
-mosip_opencrvs_partner_client_secret="qYkjsUASf3cwakJOSXvYL38U8o3pGU6g"
-mosip_opencrvs_partner_client_sha_secret="b8247112-f810-4848-a854-ce0699ee16b9"
-mosip_opencrvs_uin_token_partner="opencrvs-auth-partner"
-
-opencrvs_client_id="89a383a4-57fe-4392-8247-97e05441741b"
-opencrvs_client_secret_key="8b5ad79e-a33a-4bad-810e-3865f886e9d6"
-opencrvs_client_sha_secret="b8247112-f810-4848-a854-ce0699ee16b9"
-
 echo Copy Configmaps.
 ./copy_cm.sh
 
